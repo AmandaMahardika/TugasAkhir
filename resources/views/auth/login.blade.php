@@ -13,7 +13,7 @@
             poppins: ['Poppins', 'sans-serif']
           },
           colors: {
-            primary: '#38bdf8',
+            primary: '#fb923c', // orange-400
           }
         }
       }
@@ -23,17 +23,14 @@
     body {
       font-family: 'Poppins', sans-serif;
     }
-
     .glass-card {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(20px);
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-
     .icon-input {
       position: relative;
     }
-
     .icon-input svg {
       position: absolute;
       top: 50%;
@@ -43,11 +40,9 @@
       height: 18px;
       color: #9ca3af;
     }
-
     .icon-input input {
       padding-left: 2.5rem;
     }
-
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -58,13 +53,11 @@
         transform: translateY(0);
       }
     }
-
     .fade-in-up {
       opacity: 0;
       animation: fadeInUp 0.9s ease-out forwards;
       animation-delay: 0.3s;
     }
-
     .fade-in-up-slow {
       opacity: 0;
       animation: fadeInUp 1.2s ease-out forwards;
@@ -72,16 +65,16 @@
     }
   </style>
 </head>
-<body class="relative bg-gray-50 min-h-screen flex items-center justify-center px-4 py-8">
+<body class="relative bg-orange-50 min-h-screen flex items-center justify-center px-4 py-8">
 
-  <!-- Background SVG Wave -->
-  <div class="absolute inset-0 -z-10 overflow-hidden">
-    <svg class="w-screen h-screen" preserveAspectRatio="none" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#a2d2ff" fill-opacity="1"
-        d="M0,128L80,138.7C160,149,320,171,480,160C640,149,800,107,960,122.7C1120,139,1280,213,1360,250.7L1440,288L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z">
-      </path>
-    </svg>
-  </div>
+  <!-- SVG Blob Background -->
+  <svg class="absolute -top-32 -left-32 w-[300px] lg:w-[500px] -z-10 opacity-20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#fb923c" d="M43.6,-62.2C56.2,-55.2,65.9,-42,70.3,-27.4C74.7,-12.9,73.7,3,66.9,15.2C60.1,27.5,47.5,36.1,34.8,45.7C22,55.3,11,65.9,-1.6,68.1C-14.2,70.3,-28.4,64.1,-37.9,54.2C-47.4,44.3,-52.2,30.7,-56.5,17.1C-60.8,3.4,-64.6,-10.1,-60.4,-21.9C-56.3,-33.7,-44.2,-43.9,-31.5,-51.7C-18.7,-59.5,-4.4,-64.9,10.7,-69.2C25.8,-73.4,41.4,-76.2,43.6,-62.2Z" transform="translate(100 100)" />
+  </svg>
+
+  <svg class="absolute bottom-[-150px] right-[-100px] w-[300px] lg:w-[500px] -z-10 opacity-20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#f97316" d="M45.6,-61.2C60.2,-53.2,72.9,-41,74.3,-26.4C75.8,-11.8,66,-5.9,56.9,3.1C47.9,12.2,39.6,24.3,28.9,35.2C18.3,46.1,5.1,55.7,-7.2,61.4C-19.5,67.2,-31.1,69.1,-42.7,63.6C-54.4,58,-66.1,45,-68.5,31.1C-70.9,17.3,-64.1,2.5,-59.6,-11.1C-55,-24.8,-52.6,-37.2,-44.4,-47.4C-36.3,-57.7,-22.5,-65.9,-7.4,-68.2C7.8,-70.5,15.6,-66.9,45.6,-61.2Z" transform="translate(100 100)" />
+  </svg>
 
   <!-- Login Card -->
   <div class="glass-card max-w-4xl w-full rounded-3xl overflow-hidden grid grid-cols-1 lg:grid-cols-2 p-8 shadow-xl z-10 fade-in-up">
@@ -91,10 +84,14 @@
       <img src="{{ asset('images/undraw_login_weas.svg') }}" alt="Login Illustration" class="max-h-[400px] object-contain">
     </div>
 
-    <!-- Form -->
+    <!-- Form Login -->
     <div class="p-6 flex flex-col justify-center">
-      <h2 class="text-3xl font-bold text-primary mb-1">Selamat Datang</h2>
-      <p class="text-gray-600 text-sm mb-6">Masukkan email dan password untuk masuk.</p>
+      <div class="flex justify-center mb-4">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-14">
+      </div>
+
+      <h2 class="text-3xl font-bold text-orange-600 mb-1 text-center">Selamat Datang</h2>
+      <p class="text-gray-600 text-sm mb-6 text-center">Masukkan email dan password untuk masuk.</p>
 
       @if ($errors->any())
         <div class="bg-red-100 text-red-700 px-4 py-3 rounded mb-4 text-sm text-center font-semibold">
@@ -110,7 +107,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-mail" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 6-10 7L2 6" /></svg>
           <input type="email" name="email" required placeholder="Email"
-                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-primary focus:outline-none">
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-orange-400 focus:outline-none">
         </div>
 
         <!-- Password -->
@@ -118,23 +115,22 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-lock" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           <input type="password" name="password" required placeholder="Password"
-                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-primary focus:outline-none">
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-orange-400 focus:outline-none">
         </div>
 
         <!-- Tombol -->
         <div>
           <button type="submit"
-                  class="w-full bg-primary hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                  class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
             Login
           </button>
         </div>
       </form>
 
       <p class="mt-4 text-sm text-gray-600 text-center">
-        Belum punya akun? <a href="{{ route('register') }}" class="text-primary hover:underline">Daftar sekarang</a>
+        Belum punya akun? <a href="{{ route('register') }}" class="text-orange-500 hover:underline">Daftar sekarang</a>
       </p>
     </div>
   </div>
-
 </body>
 </html>
