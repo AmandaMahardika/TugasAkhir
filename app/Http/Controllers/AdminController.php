@@ -6,6 +6,7 @@ use App\Models\Laporan;
 use App\Models\TindakLanjut;
 use App\Models\User;
 use App\Models\LaporanSelesai;
+use App\Models\RekapPertemuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -265,4 +266,88 @@ class AdminController extends Controller
 
         return redirect()->route('admin.laporanSelesai')->with('success', 'Laporan berhasil diselesaikan dan dipindahkan ke Laporan Selesai.');
     }
+
+    public function rekapPertemuan(Request $request)
+{
+    $query = RekapPertemuan::query();
+
+    if ($request->has('nama')) {
+        $query->where('nama', 'like', '%' . $request->nama . '%');
+    }
+    if ($request->has('kelas')) {
+        $query->where('kelas', 'like', '%' . $request->kelas . '%');
+    }
+    if ($request->has('tanggal')) {
+        $query->whereDate('created_at', $request->tanggal);
+    }
+
+    $peran = $request->get('peran', 'dosen');
+    $data = $query->where('peran', $peran)->get();
+
+    return view('admin.rekap_pertemuan', compact('data', 'peran'));
+}
+
+
+
+    public function createRekap()
+    {
+        return view('admin.rekapitulasi.form');
+    }
+
+    public function storeRekap(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'peran' => 'required|in:dosen,asisten',
+            'matakuliah' => 'required|string|max:100',
+            'kelas' => 'required|string|max:20',
+            'sks' => 'required|integer',
+            'target_sesi' => 'required|integer',
+            'sesi_akhir' => 'required|integer',
+            'sesi_bulan_ini' => 'required|integer',
+            'total_sesi' => 'required|integer',
+            'sisa_sesi' => 'required|integer',
+        ]);
+
+        RekapPertemuan::create($request->all());
+
+        return redirect()->route('admin.rekap_pertemuan')->with('success', 'Data berhasil ditambahkan.');
+    }
+
+    public function editRekap($id)
+{
+    $data = RekapPertemuan::findOrFail($id);
+    return view('admin.rekapitulasi.form', compact('data'));
+}
+
+public function updateRekap(Request $request, $id)
+{
+    $request->validate([
+        'nama' => 'required|string|max:100',
+        'peran' => 'required|in:dosen,asisten',
+        'matakuliah' => 'required|string|max:100',
+        'kelas' => 'required|string|max:20',
+        'sks' => 'required|integer',
+        'target_sesi' => 'required|integer',
+        'sesi_akhir' => 'required|integer',
+        'sesi_bulan_ini' => 'required|integer',
+        'total_sesi' => 'required|integer',
+        'sisa_sesi' => 'required|integer',
+    ]);
+
+    $rekap = RekapPertemuan::findOrFail($id);
+    $rekap->update($request->all());
+
+    return redirect()->route('admin.rekap_pertemuan')->with('success', 'Data berhasil diperbarui.');
+}
+
+public function destroy($id)
+{
+    $akun = User::findOrFail($id);
+    $akun->delete();
+
+    return redirect()->route('admin.akun.index')->with('success', 'Akun berhasil dihapus.');
+}
+
+
 }
