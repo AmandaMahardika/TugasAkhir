@@ -43,6 +43,19 @@ Route::middleware(['auth', 'role:petugas'])->group(function () {
     Route::put('/tindak-lanjut/{id}', [PetugasController::class, 'updateTindakLanjut'])->name('tindakLanjut.update');
 });
 
+Route::prefix('admin')->group(function () {
+    Route::get('/rekap-pertemuan', [AdminController::class, 'rekapPertemuan'])->name('admin.rekap_pertemuan');
+
+    Route::get('/rekapitulasi/create', [AdminController::class, 'createRekap'])->name('admin.rekapitulasi.create');
+    Route::get('/rekapitulasi/edit/{id}', [AdminController::class, 'editRekap'])->name('admin.rekapitulasi.edit');
+    Route::post('/rekapitulasi/update/{id}', [AdminController::class, 'updateRekap'])->name('admin.rekapitulasi.update');    
+    Route::post('/rekapitulasi/store', [AdminController::class, 'storeRekap'])->name('admin.rekapitulasi.store');
+});
+
+
+Route::delete('/admin/akun/{user}', [AdminController::class, 'hapusAkun'])->name('admin.hapusAkun');
+
+
 // Rute Welcome
 Route::get('/', function () {
     return view('welcome');
