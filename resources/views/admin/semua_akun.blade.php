@@ -5,13 +5,6 @@
 @section('content')
     <h1 class="mb-4">Semua Akun</h1>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
-        </div>
-    @endif
-
     <!-- Tab Navs -->
     <ul class="nav nav-tabs mb-3" id="roleTabs" role="tablist">
         <li class="nav-item" role="presentation">
@@ -41,6 +34,7 @@
                             <th><i class="fas fa-user me-1"></i> Nama</th>
                             <th><i class="fas fa-envelope me-1"></i> Email</th>
                             <th><i class="fas fa-user-tag me-1"></i> Role</th>
+                            <th><i class="fas fa-tools me-1"></i> Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,6 +43,15 @@
                                 <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->email }}</td>
                                 <td>{{ $admin->role }}</td>
+                                <td>
+                                    <form action="{{ route('admin.hapusAkun', $admin->id) }}" method="POST" class="d-inline form-hapus">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -65,6 +68,7 @@
                             <th><i class="fas fa-user me-1"></i> Nama</th>
                             <th><i class="fas fa-envelope me-1"></i> Email</th>
                             <th><i class="fas fa-user-tag me-1"></i> Role</th>
+                            <th><i class="fas fa-tools me-1"></i> Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,6 +77,15 @@
                                 <td>{{ $petugas->name }}</td>
                                 <td>{{ $petugas->email }}</td>
                                 <td>{{ $petugas->role }}</td>
+                                <td>
+                                    <form action="{{ route('admin.hapusAkun', $petugas->id) }}" method="POST" class="d-inline form-hapus">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -89,6 +102,7 @@
                             <th><i class="fas fa-user me-1"></i> Nama</th>
                             <th><i class="fas fa-envelope me-1"></i> Email</th>
                             <th><i class="fas fa-user-tag me-1"></i> Role</th>
+                            <th><i class="fas fa-tools me-1"></i> Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,6 +111,15 @@
                                 <td>{{ $pengguna->name }}</td>
                                 <td>{{ $pengguna->email }}</td>
                                 <td>{{ $pengguna->role }}</td>
+                                <td>
+                                    <form action="{{ route('admin.hapusAkun', $pengguna->id) }}" method="POST" class="d-inline form-hapus">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -105,3 +128,45 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const hapusForms = document.querySelectorAll('.form-hapus');
+
+            hapusForms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus?',
+                        text: "Data tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
+        });
+    </script>
+@endpush
