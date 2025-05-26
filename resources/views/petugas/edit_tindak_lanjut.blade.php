@@ -38,7 +38,7 @@
     }
   </style>
 </head>
-<body class="relative bg-gradient-to-br from-orange-100 to-white min-h-screen py-12 px-4 overflow-hidden flex items-center justify-center">
+<body class="relative bg-gradient-to-br from-orange-100 to-white min-h-screen py-12 px-4 flex items-center justify-center">
 
   <!-- SVG Blob Background -->
   <svg class="blob top-[-100px] left-[-100px] w-[300px] lg:w-[500px]" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
