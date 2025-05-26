@@ -60,36 +60,49 @@ class PetugasController extends Controller
     }
 
     public function updateTindakLanjut(Request $request, $id)
-    {
-        $request->validate([
-            'penanganan' => 'nullable|string',
-            'status' => 'required|in:diterima,diproses,selesai',
+{
+    $tindakLanjut = TindakLanjut::findOrFail($id);
+
+    // Simpan status lama untuk pembanding
+    $statusLama = $tindakLanjut->status;
+
+    // Validasi dasar
+    $request->validate([
+        'status' => 'required|in:diproses,selesai', // paksa agar tidak bisa pilih "diterima"
+    ], [
+        'status.in' => 'Status harus diubah ke "diproses" atau "selesai".',
+    ]);
+
+    // Validasi penanganan wajib diisi jika status bukan 'diterima'
+    if (in_array($request->status, ['diproses', 'selesai']) && empty(trim($request->penanganan))) {
+        return redirect()->back()
+            ->withErrors(['penanganan' => 'Penanganan harus diisi jika status bukan "diterima".'])
+            ->withInput();
+    }
+
+    DB::transaction(function () use ($request, $tindakLanjut) {
+        $tindakLanjut->update([
+            'penanganan' => $request->penanganan,
+            'status' => $request->status,
         ]);
 
-        $tindakLanjut = TindakLanjut::findOrFail($id);
-        $laporan = $tindakLanjut->laporan; // Ambil laporan terkait
+        $tindakLanjut->laporan->update([
+            'status' => $request->status,
+        ]);
 
-        DB::transaction(function () use ($request, $tindakLanjut, $laporan) {
-            $tindakLanjut->update([
-                'penanganan' => $request->penanganan,
-                'status' => $request->status,
-            ]);
+        if ($request->status === 'selesai') {
+            LaporanSelesai::updateOrCreate(
+                ['laporan_id' => $tindakLanjut->laporan_id],
+                [
+                    'penanganan' => $request->penanganan,
+                    'petugas_id' => Auth::id(),
+                    'status' => $request->status,
+                ]
+            );
+        }
+    });
 
-            $laporan->update(['status' => $request->status]);
+    return redirect()->route('petugas.dashboard')->with('success', 'Tindak lanjut berhasil diperbarui.');
+}
 
-            // Pindahkan data ke LaporanSelesai jika status 'selesai'
-            if ($request->status == 'selesai') {
-                LaporanSelesai::updateOrCreate(
-                    ['laporan_id' => $laporan->id],
-                    [
-                        'penanganan' => $request->penanganan,
-                        'petugas_id' => Auth::id(),
-                        'status' => $request->status,
-                    ]
-                );
-            }
-        });
-
-        return redirect()->route('petugas.dashboard')->with('success', 'Tindak lanjut berhasil diperbarui.');
-    }
 }
